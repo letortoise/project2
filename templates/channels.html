@@ -21,7 +21,7 @@
 
     <div class="container">
         <div id="channels" class="list-group">
-            {% for channel in channels %}
+            {% for channel in channels.values() %}
                 <a href="{{ url_for('channel', channelName=channel.name) }}" class="list-group-item list-group-item-action">
                     {{ channel.name }}
                 </a>

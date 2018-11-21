@@ -17,7 +17,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Keep track of chat channels
-channels = []
+channels = {}
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -36,20 +36,19 @@ def index():
 
 @app.route("/create_channel", methods=["POST"])
 def create():
-    print([channel.name for channel in channels])
 
-    # Get the new channel name
+    # Get the name of the channel
     name = request.form.get("name")
 
-    # Make sure the name is not empty and isn't already taken
+    # Make sure the name valid, i.e. not taken, not empty
     if name is None:
         return jsonify({"success": False})
-    if name in [channel.name for channel in channels]:
+    if name in channels.keys():
         return jsonify({"success": False})
 
     # Create the new channel
     channel = Channel(name=name)
-    channels.append(channel)
+    channels[name] = channel
 
     print(channels)
 
@@ -59,14 +58,23 @@ def create():
 def channel(channelName):
 
     # Make sure the channel exists
-    if channelName not in [channel.name for channel in channels]:
+    if channelName not in channels.keys():
         return render_template("error.html", message="no such channel")
+    channel = channels[channelName]
 
+    # Keep track of user joining the channel
+    session["channel"] = channelName
 
-    return render_template("chat.html", channel=channels[channelName])
+    return render_template("chat.html", channel=channel)
 
 @socketio.on("send message")
 def message(data):
-    # room = data["channel"]
+
+    # Get the message
     message = data["message"]
+
+    # Get the channel by name
+    channel = next(channel for channel in channels
+            if channel.name == channelName)
+
     emit("new message", {"message": message}, broadcast=True)
