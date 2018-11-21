@@ -1,5 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+    // When connected, allow users to create new channels
+    socket.on('connect', () => {
+        document.querySelector('#form').onsubmit = () => {
+
+            // Get name for new channel and let the server know
+            const name = document.querySelector('#name').value;
+            socket.emit('create channel', {'name': name});
+            return false;
+        };
+    });
+
+    socket.on('channel created', (data) => {
+        console.log(data)
+        if (!data.success) {
+            alert('Something went wrong');
+        }
+
+        // Update the DOM
+        // const a = document.createElement('a');
+        // a.classList.add('list-group-item', 'list-group-item-action');
+        // document.querySelector('#channels').append(a);
+    });
+
     document.querySelector('#add').onclick = () => {
 
         // Create a form where the user can create a new channel
@@ -14,35 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    document.querySelector('#form').onsubmit = () => {
 
-        // Initialize new request
-        const request = new XMLHttpRequest();
-        const name = document.querySelector('#name').value;
-        request.open('POST', '/create_channel');
-
-        // Callback for when request completes
-        request.onload = () => {
-
-            // Extract JSON data from request
-            const data = JSON.parse(request.responseText);
-
-            if (data.success) {
-                alert('channel was added');
-            }
-            else {
-                alert('something failed');
-            }
-
-        };
-
-        // Add data to send with request
-        const data = new FormData();
-        data.append('name', name);
-
-        // Send request
-        request.send(data);
-        return false;
-    };
 
 });

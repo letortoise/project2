@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('connect', () => {
 
         const messageInput = document.querySelector('#message');
-        console.log("hello")
 
         // Submitting the input or selecting the button should emit the "send message" event
         const sendMessage = () => {

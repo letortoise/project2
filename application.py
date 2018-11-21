@@ -37,8 +37,6 @@ def index():
 @app.route("/create_channel", methods=["POST"])
 def create():
 
-    # Get the name of the channel
-    name = request.form.get("name")
 
     # Make sure the name valid, i.e. not taken, not empty
     if name is None:
@@ -54,8 +52,29 @@ def create():
 
     return jsonify({"success": True})
 
+@socketio.on("create channel")
+def createChannel(data):
+
+    # Get the channel name
+    name = data['name']
+
+    # Make sure the name valid, i.e. not taken, not empty
+    if name is None:
+        emit("channel created", {"success": False})
+    if name in channels.keys():
+        emit("channel created", {"success": False})
+
+    # Create the new channel
+    channel = Channel(name=name)
+    channels[name] = channel
+
+    # Broadcast new channel to users
+    emit("channel created", {"success": True}, broadcast=True)
+
+
 @app.route("/channel/<string:channelName>")
 def channel(channelName):
+    print(session["username"])
 
     # Make sure the channel exists
     if channelName not in channels.keys():
