@@ -34,24 +34,6 @@ def index():
         session['username'] = username
         return redirect(url_for('index'))
 
-@app.route("/create_channel", methods=["POST"])
-def create():
-
-
-    # Make sure the name valid, i.e. not taken, not empty
-    if name is None:
-        return jsonify({"success": False})
-    if name in channels.keys():
-        return jsonify({"success": False})
-
-    # Create the new channel
-    channel = Channel(name=name)
-    channels[name] = channel
-
-    print(channels)
-
-    return jsonify({"success": True})
-
 @socketio.on("create channel")
 def createChannel(data):
 
@@ -89,11 +71,13 @@ def channel(channelName):
 @socketio.on("send message")
 def message(data):
 
-    # Get the message
+    # Create map containing message info
     message = data["message"]
+    username = session["username"]
+    messageData = {"message": message, "username": username}
 
     # Save message in channel history
     channel = channels[session["channel"]]
-    channel.addMessage(message)
+    channel.addMessage(messageData)
 
-    emit("new message", {"message": message}, broadcast=True)
+    emit("new message", messageData, broadcast=True)

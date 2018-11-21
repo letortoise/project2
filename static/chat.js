@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // When a new message is announced, update the page
     socket.on('new message', data => {
 
-        // Create message element
+        // Create new message
         const h = document.createElement('h5');
-        h.innerHTML = `${data.message}`;
+        h.innerHTML = `${data.username}: ${data.message}`;
         document.querySelector('#chat-window').append(h);
 
     });

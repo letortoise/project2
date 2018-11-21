@@ -15,7 +15,7 @@
 {% block body %}
     <div id=chat-window class="chat">
         {% for message in channel.messages %}
-            <h5>{{ message }}</h5>
+            <h5>{{ message["username"] }}: {{ message["message"] }}</h5>
         {% endfor %}
     </div>
 
