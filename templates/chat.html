@@ -14,16 +14,17 @@
 
 {% block body %}
     <div id=chat-window class="chat">
+        {% for message in channel.messages %}
+            <h5>{{ message }}</h5>
+        {% endfor %}
     </div>
 
     <div id=chat-input class="chat">
-        <form id="form">
-            <div class="input-group mb-3">
-                <input id="message" class="form-control" type="text" placeholder="Message">
-                <div class="input-group-append">
-                    <button id="send" class="btn btn-outline-secondary" type="button">Send</button>
-                </div>
+        <div class="input-group mb-3">
+            <input id="message" autocomplete="off" class="form-control" type="text" placeholder="Message">
+            <div class="input-group-append">
+                <button id="send" class="btn btn-outline-secondary" type="button">Send</button>
             </div>
-        </form>
+        </div>
     </div>
 {% endblock %}
