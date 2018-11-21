@@ -10,10 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("hello")
 
         // Submitting the input or selecting the button should emit the "send message" event
-        document.querySelector('#send').onclick = () => {
+        document.querySelector('#form').onsubmit = () => {
             const message = messageInput.value;
             messageInput.value = '';
             socket.emit('send message', {'message': message});
+
+            //Don't allow the page to reload
+            return false;
         };
     });
 

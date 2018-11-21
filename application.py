@@ -73,8 +73,8 @@ def message(data):
     # Get the message
     message = data["message"]
 
-    # Get the channel by name
-    channel = next(channel for channel in channels
-            if channel.name == channelName)
+    # Save message in channel history
+    channel = channels[session["channel"]]
+    channel.addMessage(message)
 
     emit("new message", {"message": message}, broadcast=True)
